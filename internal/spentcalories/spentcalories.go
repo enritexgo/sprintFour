@@ -25,25 +25,25 @@ func parseTraining(data string) (int, string, time.Duration, error) {
 
 	// 2. Проверка длины слайса.
 	if len(info) != 3 {
-		return 0, "", 0, errors.New("Неправильное количество параметров")
+		return 0, "", 0, fmt.Errorf("Длина строки %s не соответсвует формату", data)
 	}
 
 	// 3. Преобразование первого элемента слайса (количество шагов) в тип int.
 	countSteps, err := strconv.Atoi(info[0])
 	if err != nil {
-		return 0, "", 0, err
+		return 0, "", 0, fmt.Errorf("Ошибка при конвертации: %v", err)
 	}
 	if countSteps <= 0 {
-		return 0, "", 0, errors.New("Некорректное количество шагов")
+		return 0, "", 0, fmt.Errorf("Отрицательное количество шагов: %v", err)
 	}
 
 	// 4. Преобразование третьего элемента слайса в time.Duration.
 	trainingDuration, err := time.ParseDuration(info[2])
 	if err != nil {
-		return 0, "", 0, err
+		return 0, "", 0, fmt.Errorf("Ошибка при выполнении time.ParseDuration: %v", err)
 	}
 	if trainingDuration <= 0 {
-		return 0, "", 0, errors.New("Ошибка временного интервала")
+		return 0, "", 0, fmt.Errorf("Ошибка! Отрицательное время: %v", err)
 	}
 
 	// 5. Вывод информации.
@@ -105,11 +105,11 @@ func TrainingInfo(data string, weight, height float64) (string, error) {
 	}
 	switch trainingType {
 	case typeRun:
-		result = fmt.Sprintf("Тип тренировки: %s\nДлительность: %.2f ч.\nДистанция: %.2f км.\nСкорость: %.2f км/ч\nСожгли калроий: %.2f", trainingType, duration.Hours(), rDistance, rSpeed, runCalories)
+		result = fmt.Sprintf("Тип тренировки: %s\nДлительность: %.2f ч.\nДистанция: %.2f км.\nСкорость: %.2f км/ч\nСожгли калорий: %.2f\n", trainingType, duration.Hours(), rDistance, rSpeed, runCalories)
 	case typeWalk:
-		result = fmt.Sprintf("Тип тренировки: %s\nДлительность: %.2f ч.\nДистанция: %.2f км.\nСкорость: %.2f км/ч\nСожгли калроий: %.2f", trainingType, duration.Hours(), rDistance, rSpeed, walkCalories)
+		result = fmt.Sprintf("Тип тренировки: %s\nДлительность: %.2f ч.\nДистанция: %.2f км.\nСкорость: %.2f км/ч\nСожгли калорий: %.2f\n", trainingType, duration.Hours(), rDistance, rSpeed, walkCalories)
 	default:
-		result = "неизвестный тип тренировки"
+		return "", errors.New("неизвестный тип тренировки")
 	}
 
 	return result, nil
